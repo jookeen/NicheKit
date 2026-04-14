@@ -5,7 +5,8 @@
     { "src": "/", "dest": "/index.html" },
     { "src": "/fielddocs", "dest": "/fielddocs-pro.html" },
     { "src": "/workkit", "dest": "/workkit-templates.html" },
-    { "src": "/autoflow", "dest": "/autoflow-smb.html" }
+    { "src": "/autoflow", "dest": "/autoflow-smb.html" },
+    { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
   "headers": [
     {
@@ -15,6 +16,19 @@
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
