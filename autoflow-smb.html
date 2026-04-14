@@ -869,7 +869,7 @@ async function pwValidate(){
   const err=document.getElementById('pwError');err.style.display='none';
   if(!key){err.textContent='Enter your license key.';err.style.display='block';return;}
   try{
-    const r=await fetch('https://api.lemonsqueezy.com/v1/licenses/validate',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({license_key:key})});
+    const r=await fetch('/api/validate-license',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({license_key:key})});
     const d=await r.json();
     if(d.valid){localStorage.setItem(PW_APP+'_key',key);document.getElementById('pwOverlay').style.display='none';pwUpdateBar();}
     else{err.textContent='Invalid key. Check your purchase email.';err.style.display='block';}
@@ -921,7 +921,7 @@ Create a professional automation plan with:
 Be specific, technical, and actionable. This is a deliverable a consultant would hand to a client.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/generate-plan', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
