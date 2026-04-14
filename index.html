@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NicheKit — AI Tools for Niche Digital Products</title>
+<meta name="description" content="Three AI-powered tools to create and sell niche digital products — SOPs, workspace templates, and automation plans. Start for free.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090b;
+    --surface: #111113;
+    --card: #18181b;
+    --border: #27272a;
+    --text: #fafafa;
+    --muted: #71717a;
+    --muted2: #a1a1aa;
+    --amber: #f59e0b;
+    --green: #22c55e;
+    --blue: #3b82f6;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-weight:400; overflow-x:hidden; }
+
+  /* NOISE */
+  body::after {
+    content:''; position:fixed; inset:0;
+    background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:0; opacity:0.4;
+  }
+
+  /* NAV */
+  nav {
+    position:sticky; top:0; z-index:50;
+    padding:0 48px;
+    height:60px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid var(--border);
+    background:rgba(9,9,11,0.92);
+    backdrop-filter:blur(12px);
+  }
+  .nav-logo {
+    font-family:'Syne',sans-serif;
+    font-weight:800; font-size:20px;
+    letter-spacing:-0.03em;
+  }
+  .nav-logo span { color:var(--amber); }
+  .nav-right { display:flex; align-items:center; gap:20px; }
+  .nav-link { font-size:13px; color:var(--muted2); text-decoration:none; transition:color 0.2s; }
+  .nav-link:hover { color:var(--text); }
+  .nav-cta {
+    background:var(--text); color:var(--bg);
+    font-size:13px; font-weight:600;
+    padding:8px 18px; border-radius:6px;
+    text-decoration:none; transition:opacity 0.2s;
+  }
+  .nav-cta:hover { opacity:0.85; }
+
+  /* HERO */
+  .hero {
+    position:relative; z-index:5;
+    padding:100px 48px 80px;
+    text-align:center;
+    max-width:900px; margin:0 auto;
+  }
+  .hero-pill {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(245,158,11,0.1);
+    border:1px solid rgba(245,158,11,0.25);
+    color:var(--amber);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; font-weight:500;
+    padding:6px 16px; border-radius:100px;
+    letter-spacing:0.08em; text-transform:uppercase;
+    margin-bottom:28px;
+  }
+  .hero-pill::before { content:'●'; font-size:8px; animation:blink 1.8s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero h1 {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(48px,7vw,92px);
+    line-height:0.95;
+    letter-spacing:-0.04em;
+    margin-bottom:24px;
+  }
+  .hero h1 .grad {
+    background:linear-gradient(135deg,#f59e0b,#ef4444,#8b5cf6);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .hero-sub {
+    font-size:18px; color:var(--muted2); line-height:1.6;
+    max-width:560px; margin:0 auto 40px;
+  }
+  .hero-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn-hero {
+    background:var(--amber); color:#000;
+    font-weight:700; font-size:15px;
+    padding:14px 32px; border-radius:8px;
+    text-decoration:none; transition:all 0.2s;
+    box-shadow:0 0 30px rgba(245,158,11,0.25);
+  }
+  .btn-hero:hover { transform:translateY(-2px); box-shadow:0 0 40px rgba(245,158,11,0.35); }
+  .btn-outline-hero {
+    background:transparent; color:var(--text);
+    border:1px solid var(--border);
+    font-weight:500; font-size:15px;
+    padding:14px 32px; border-radius:8px;
+    text-decoration:none; transition:all 0.2s;
+  }
+  .btn-outline-hero:hover { border-color:var(--muted2); }
+
+  /* TRUST BAR */
+  .trust-bar {
+    position:relative; z-index:5;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    padding:18px 48px;
+    display:flex; align-items:center; justify-content:center;
+    gap:48px; flex-wrap:wrap;
+    background:var(--surface);
+  }
+  .trust-item {
+    font-size:13px; color:var(--muted);
+    display:flex; align-items:center; gap:8px;
+  }
+  .trust-item strong { color:var(--text); font-weight:600; }
+
+  /* TOOLS SECTION */
+  .tools-section {
+    position:relative; z-index:5;
+    max-width:1200px; margin:0 auto;
+    padding:80px 48px;
+  }
+  .section-eyebrow {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; color:var(--amber);
+    letter-spacing:0.15em; text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .section-title {
+    font-family:'Syne',sans-serif;
+    font-size:38px; font-weight:800;
+    letter-spacing:-0.03em;
+    margin-bottom:12px;
+  }
+  .section-sub { font-size:15px; color:var(--muted2); margin-bottom:56px; }
+
+  .tools-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+
+  .tool-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    transition:all 0.3s;
+    position:relative;
+  }
+  .tool-card:hover { border-color:rgba(255,255,255,0.15); transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+  .tool-card-accent {
+    height:4px;
+  }
+  .tc-amber { background:linear-gradient(90deg,#f59e0b,#d97706); }
+  .tc-terra { background:linear-gradient(90deg,#c4603a,#ef4444); }
+  .tc-cyan { background:linear-gradient(90deg,#00d4ff,#3b82f6); }
+
+  .tool-card-body { padding:28px; }
+  .tool-icon {
+    font-size:36px; margin-bottom:16px; display:block;
+  }
+  .tool-name {
+    font-family:'Syne',sans-serif;
+    font-size:22px; font-weight:700;
+    letter-spacing:-0.02em; margin-bottom:8px;
+  }
+  .tool-desc { font-size:13px; color:var(--muted2); line-height:1.6; margin-bottom:20px; }
+  .tool-features { display:flex; flex-direction:column; gap:7px; margin-bottom:24px; }
+  .tool-feature {
+    font-size:12px; color:var(--muted2);
+    display:flex; align-items:center; gap:8px;
+  }
+  .tool-feature::before { content:'→'; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--amber); }
+  .tc-terra-feat::before { color:#c4603a; }
+  .tc-cyan-feat::before { color:#00d4ff; }
+
+  .tool-footer {
+    border-top:1px solid var(--border);
+    padding:20px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .tool-price { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--muted); }
+  .tool-price strong { color:var(--green); font-size:15px; }
+  .tool-btn {
+    font-size:12px; font-weight:600;
+    padding:8px 20px; border-radius:6px;
+    text-decoration:none; transition:all 0.2s;
+    cursor:pointer;
+  }
+  .tb-amber { background:rgba(245,158,11,0.15); color:var(--amber); border:1px solid rgba(245,158,11,0.3); }
+  .tb-amber:hover { background:rgba(245,158,11,0.25); }
+  .tb-terra { background:rgba(196,96,58,0.15); color:#e07050; border:1px solid rgba(196,96,58,0.3); }
+  .tb-terra:hover { background:rgba(196,96,58,0.25); }
+  .tb-cyan { background:rgba(0,212,255,0.1); color:#00d4ff; border:1px solid rgba(0,212,255,0.25); }
+  .tb-cyan:hover { background:rgba(0,212,255,0.2); }
+
+  /* PRICING */
+  .pricing-section {
+    position:relative; z-index:5;
+    max-width:1000px; margin:0 auto;
+    padding:0 48px 80px;
+  }
+  .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .pricing-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:32px;
+    transition:all 0.25s;
+    position:relative;
+  }
+  .pricing-card.featured {
+    border-color:var(--amber);
+    box-shadow:0 0 40px rgba(245,158,11,0.1);
+  }
+  .pricing-card:hover { transform:translateY(-3px); }
+  .featured-tag {
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    background:var(--amber); color:#000;
+    font-size:10px; font-weight:700;
+    padding:4px 14px; border-radius:100px;
+    letter-spacing:0.08em; text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .plan-name { font-size:13px; color:var(--muted2); font-weight:500; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.1em; }
+  .plan-price {
+    font-family:'Syne',sans-serif;
+    font-size:44px; font-weight:800;
+    letter-spacing:-0.03em;
+    margin-bottom:4px; line-height:1;
+  }
+  .plan-cadence { font-size:12px; color:var(--muted); margin-bottom:24px; }
+  .plan-feats { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+  .plan-feat { font-size:13px; color:var(--muted2); display:flex; align-items:center; gap:8px; }
+  .plan-feat::before { content:'✓'; color:var(--green); font-weight:700; font-size:12px; }
+  .plan-cta {
+    display:block; width:100%; text-align:center;
+    padding:12px; border-radius:8px;
+    font-weight:600; font-size:14px;
+    text-decoration:none; cursor:pointer;
+    border:none; transition:all 0.2s;
+  }
+  .cta-primary { background:var(--amber); color:#000; }
+  .cta-primary:hover { opacity:0.9; }
+  .cta-secondary { background:var(--surface); color:var(--text); border:1px solid var(--border); }
+  .cta-secondary:hover { border-color:var(--muted2); }
+
+  /* HOW IT WORKS */
+  .how-section {
+    position:relative; z-index:5;
+    max-width:1000px; margin:0 auto;
+    padding:0 48px 80px;
+  }
+  .steps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+  .step-card { text-align:center; }
+  .step-num {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; color:var(--amber);
+    font-weight:600; letter-spacing:0.1em;
+    margin-bottom:12px; display:block;
+  }
+  .step-icon { font-size:32px; margin-bottom:12px; display:block; }
+  .step-title { font-weight:600; font-size:15px; margin-bottom:6px; }
+  .step-desc { font-size:12px; color:var(--muted2); line-height:1.6; }
+
+  /* CTA BAND */
+  .cta-band {
+    position:relative; z-index:5;
+    margin:0 48px 80px;
+    background:linear-gradient(135deg, rgba(245,158,11,0.1), rgba(139,92,246,0.08));
+    border:1px solid rgba(245,158,11,0.2);
+    border-radius:16px;
+    padding:60px 48px;
+    text-align:center;
+  }
+  .cta-band h2 {
+    font-family:'Syne',sans-serif;
+    font-size:36px; font-weight:800;
+    letter-spacing:-0.03em; margin-bottom:12px;
+  }
+  .cta-band p { font-size:16px; color:var(--muted2); margin-bottom:32px; }
+
+  /* FOOTER */
+  footer {
+    position:relative; z-index:5;
+    border-top:1px solid var(--border);
+    padding:28px 48px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:12px; color:var(--muted);
+  }
+  footer a { color:var(--muted); text-decoration:none; }
+  footer a:hover { color:var(--text); }
+
+  @media(max-width:768px) {
+    nav { padding:0 20px; }
+    .hero { padding:60px 20px 48px; }
+    .tools-grid, .pricing-grid, .steps-grid { grid-template-columns:1fr; }
+    .tools-section, .pricing-section, .how-section { padding-left:20px; padding-right:20px; }
+    .trust-bar { gap:24px; padding:16px 20px; }
+    .cta-band { margin:0 20px 60px; padding:40px 24px; }
+    footer { padding:20px; flex-direction:column; gap:12px; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Niche<span>Kit</span></div>
+  <div class="nav-right">
+    <a class="nav-link" href="#tools">Tools</a>
+    <a class="nav-link" href="#pricing">Pricing</a>
+    <a class="nav-cta" href="#tools">Try Free →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-pill">3 AI-Powered Tools · Zero Competition Niches</div>
+  <h1>Build Digital Products<br>That <span class="grad">Actually Sell</span></h1>
+  <p class="hero-sub">Three tools to create SOPs, workspace templates, and automation plans for niche industries — the highest-margin digital products with the lowest competition.</p>
+  <div class="hero-actions">
+    <a href="#tools" class="btn-hero">Start For Free</a>
+    <a href="#pricing" class="btn-outline-hero">See Pricing</a>
+  </div>
+</section>
+
+<div class="trust-bar">
+  <div class="trust-item">✦ <strong>3 free</strong> generations per tool</div>
+  <div class="trust-item">✦ No account needed to start</div>
+  <div class="trust-item">✦ Outputs sell for <strong>$47–$97</strong> each</div>
+  <div class="trust-item">✦ Powered by Claude AI</div>
+</div>
+
+<section class="tools-section" id="tools">
+  <div class="section-eyebrow">The Suite</div>
+  <div class="section-title">Three tools. One unfair advantage.</div>
+  <p class="section-sub">Each tool targets an underserved market where digital products sell with almost zero competition.</p>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-card-accent tc-amber"></div>
+      <div class="tool-card-body">
+        <span class="tool-icon">📋</span>
+        <div class="tool-name">FieldDocs Pro</div>
+        <p class="tool-desc">Generate compliance templates, SOPs, and onboarding kits for niche industries like trucking, dental, HVAC, and more.</p>
+        <div class="tool-features">
+          <div class="tool-feature">12 industries pre-loaded</div>
+          <div class="tool-feature">SOPs, compliance checklists, training guides</div>
+          <div class="tool-feature">Sells for $47–$97 per document</div>
+          <div class="tool-feature">Zero niche competition</div>
+        </div>
+      </div>
+      <div class="tool-footer">
+        <div class="tool-price">From <strong>Free</strong></div>
+        <a href="fielddocs-pro.html" class="tool-btn tb-amber">Open Tool →</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-card-accent tc-terra"></div>
+      <div class="tool-card-body">
+        <span class="tool-icon">🗂️</span>
+        <div class="tool-name">WorkKit Templates</div>
+        <p class="tool-desc">Build Notion and ClickUp workspace templates for therapists, contractors, teachers, and other niche professions.</p>
+        <div class="tool-features">
+          <div class="tool-feature tc-terra-feat">6 professions · more coming</div>
+          <div class="tool-feature tc-terra-feat">Auto-generated product copy</div>
+          <div class="tool-feature tc-terra-feat">Sells for $44–$79 per template</div>
+          <div class="tool-feature tc-terra-feat">Gumroad / Etsy ready</div>
+        </div>
+      </div>
+      <div class="tool-footer">
+        <div class="tool-price">From <strong>Free</strong></div>
+        <a href="workkit-templates.html" class="tool-btn tb-terra">Open Tool →</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-card-accent tc-cyan"></div>
+      <div class="tool-card-body">
+        <span class="tool-icon">⚡</span>
+        <div class="tool-name">AutoFlow SMB</div>
+        <p class="tool-desc">Discover automation opportunities for small businesses and generate a complete client-ready implementation plan.</p>
+        <div class="tool-features">
+          <div class="tool-feature tc-cyan-feat">10 business types</div>
+          <div class="tool-feature tc-cyan-feat">ROI calculator built-in</div>
+          <div class="tool-feature tc-cyan-feat">Sell setups for $500–$2,000</div>
+          <div class="tool-feature tc-cyan-feat">Make.com + Zapier + AI stack</div>
+        </div>
+      </div>
+      <div class="tool-footer">
+        <div class="tool-price">From <strong>Free</strong></div>
+        <a href="autoflow-smb.html" class="tool-btn tb-cyan">Open Tool →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-section">
+  <div class="section-eyebrow">How It Works</div>
+  <div class="section-title">Pick → Generate → Sell</div>
+  <p class="section-sub" style="margin-bottom:40px">From idea to sellable product in under 2 minutes.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <span class="step-num">01 / SELECT</span>
+      <span class="step-icon">🎯</span>
+      <div class="step-title">Pick a niche</div>
+      <p class="step-desc">Choose an industry, profession, or business type from the pre-loaded library.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">02 / GENERATE</span>
+      <span class="step-icon">✦</span>
+      <div class="step-title">AI creates the document</div>
+      <p class="step-desc">Claude AI generates a complete, professional, ready-to-sell document in ~30 seconds.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">03 / PACKAGE</span>
+      <span class="step-icon">📦</span>
+      <div class="step-title">Copy & package as PDF</div>
+      <p class="step-desc">Copy the output, paste into Notion/Google Docs, export as PDF. Your product is ready.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">04 / SELL</span>
+      <span class="step-icon">💰</span>
+      <div class="step-title">List on Gumroad or Etsy</div>
+      <p class="step-desc">Post to Gumroad, Etsy, or a direct link. Each document sells for $47–$97 with zero ad spend.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section" id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <div class="section-title">Start free. Scale when it works.</div>
+  <p class="section-sub" style="margin-bottom:40px">You shouldn't pay until you've made money. Three free generations to prove the concept.</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0</div>
+      <div class="plan-cadence">forever</div>
+      <div class="plan-feats">
+        <div class="plan-feat">3 generations per tool</div>
+        <div class="plan-feat">All 3 tools included</div>
+        <div class="plan-feat">Full document quality</div>
+        <div class="plan-feat">Copy & export outputs</div>
+      </div>
+      <a href="#tools" class="plan-cta cta-secondary">Start Free</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="featured-tag">Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$9</div>
+      <div class="plan-cadence">per month · cancel anytime</div>
+      <div class="plan-feats">
+        <div class="plan-feat">Unlimited generations</div>
+        <div class="plan-feat">All 3 tools</div>
+        <div class="plan-feat">Priority AI queue</div>
+        <div class="plan-feat">Saved history (coming soon)</div>
+        <div class="plan-feat">New tools first access</div>
+      </div>
+      <a href="https://YOUR_LEMON_SQUEEZY_LINK" class="plan-cta cta-primary">Get Pro — $9/mo</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="plan-name">Lifetime</div>
+      <div class="plan-price">$49</div>
+      <div class="plan-cadence">one-time payment</div>
+      <div class="plan-feats">
+        <div class="plan-feat">Everything in Pro</div>
+        <div class="plan-feat">All future tools included</div>
+        <div class="plan-feat">One-time payment, forever</div>
+        <div class="plan-feat">Founding member badge</div>
+      </div>
+      <a href="https://YOUR_LEMON_SQUEEZY_LINK_LIFETIME" class="plan-cta cta-secondary">Get Lifetime — $49</a>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>Start making money from digital products today.</h2>
+  <p>No backend. No inventory. No competition. Just AI-generated documents that sell.</p>
+  <a href="#tools" class="btn-hero">Open a Tool Free →</a>
+</div>
+
+<footer>
+  <div>© 2025 NicheKit · Built with Claude AI</div>
+  <div style="display:flex;gap:20px">
+    <a href="fielddocs-pro.html">FieldDocs Pro</a>
+    <a href="workkit-templates.html">WorkKit</a>
+    <a href="autoflow-smb.html">AutoFlow</a>
+  </div>
+</footer>
+
+</body>
+</html>

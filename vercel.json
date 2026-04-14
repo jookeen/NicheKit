@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "nichekit",
+  "routes": [
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/fielddocs", "dest": "/fielddocs-pro.html" },
+    { "src": "/workkit", "dest": "/workkit-templates.html" },
+    { "src": "/autoflow", "dest": "/autoflow-smb.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ]
+}

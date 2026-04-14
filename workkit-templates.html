@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkKit — Workspace Templates for Niche Professions</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf6f1;
+    --surface: #f3ece2;
+    --card: #ffffff;
+    --border: #e4d8c8;
+    --terracotta: #c4603a;
+    --terra-light: #f0d4c8;
+    --terra-glow: rgba(196,96,58,0.08);
+    --sage: #7a9e7e;
+    --sage-light: #d4e8d4;
+    --slate: #4a5568;
+    --text: #2d2320;
+    --muted: #96897e;
+    --accent2: #5c7cac;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+  /* Subtle paper texture */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:0;
+    opacity:0.5;
+  }
+
+  /* HEADER */
+  header {
+    position:relative; z-index:10;
+    padding:22px 48px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--border);
+    background:rgba(250,246,241,0.95);
+    backdrop-filter:blur(8px);
+  }
+  .logo {
+    font-family:'Cormorant Garamond',serif;
+    font-weight:700;
+    font-size:26px;
+    color:var(--text);
+    letter-spacing:-0.01em;
+  }
+  .logo em { font-style:italic; color:var(--terracotta); }
+  .nav-links {
+    display:flex;
+    gap:28px;
+    list-style:none;
+  }
+  .nav-links a {
+    font-size:13px;
+    font-weight:500;
+    color:var(--muted);
+    text-decoration:none;
+    letter-spacing:0.03em;
+    transition:color 0.2s;
+  }
+  .nav-links a:hover { color:var(--terracotta); }
+
+  /* HERO */
+  .hero {
+    position:relative;
+    z-index:5;
+    padding:72px 48px 56px;
+    max-width:1200px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  .hero-left h1 {
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-size:clamp(48px, 5vw, 76px);
+    line-height:1.05;
+    margin-bottom:20px;
+    letter-spacing:-0.02em;
+  }
+  .hero-left h1 em {
+    font-style:italic;
+    color:var(--terracotta);
+    display:block;
+  }
+  .hero-sub {
+    font-size:15px;
+    color:var(--muted);
+    line-height:1.7;
+    margin-bottom:32px;
+    max-width:360px;
+  }
+  .platform-badges {
+    display:flex;
+    gap:10px;
+  }
+  .platform-badge {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    border:1px solid var(--border);
+    background:var(--card);
+    font-size:12px;
+    font-weight:500;
+    color:var(--slate);
+    cursor:pointer;
+    transition:all 0.2s;
+    border-radius:2px;
+  }
+  .platform-badge:hover, .platform-badge.active {
+    border-color:var(--terracotta);
+    background:var(--terra-glow);
+    color:var(--terracotta);
+  }
+
+  /* Hero preview card */
+  .hero-preview {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(45,35,32,0.12), 0 4px 16px rgba(45,35,32,0.06);
+    transform:rotate(1.5deg);
+    transition:transform 0.3s;
+  }
+  .hero-preview:hover { transform:rotate(0.5deg) scale(1.01); }
+  .preview-bar {
+    background:var(--surface);
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .preview-dot { width:10px;height:10px;border-radius:50%;background:var(--border); }
+  .preview-dot:nth-child(1){background:#ff6b6b} .preview-dot:nth-child(2){background:#ffd93d} .preview-dot:nth-child(3){background:#6bcb77}
+  .preview-title { font-size:12px;font-weight:500;color:var(--muted);margin-left:8px; }
+  .preview-body { padding:20px; }
+  .preview-section { margin-bottom:16px; }
+  .preview-section-header {
+    font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;
+    color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;
+  }
+  .preview-section-header::after { content:'';flex:1;height:1px;background:var(--border); }
+  .preview-block {
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:10px 12px;
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:12px;
+    color:var(--slate);
+  }
+  .block-icon { font-size:14px; opacity:0.7; }
+  .block-tag {
+    margin-left:auto;
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:20px;
+    background:var(--sage-light);
+    color:var(--sage);
+    font-weight:500;
+  }
+  .block-tag.orange { background:var(--terra-light); color:var(--terracotta); }
+  .block-tag.blue { background:#dbe8f8; color:var(--accent2); }
+
+  /* MAIN APP */
+  .app-main {
+    position:relative;
+    z-index:5;
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 48px 80px;
+  }
+
+  .section-heading {
+    font-family:'Cormorant Garamond',serif;
+    font-size:32px;
+    font-weight:600;
+    margin-bottom:8px;
+    letter-spacing:-0.01em;
+  }
+  .section-heading em { font-style:italic; color:var(--terracotta); }
+  .section-sub {
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:32px;
+  }
+
+  /* PROFESSION GRID */
+  .profession-filter {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:28px;
+  }
+  .filter-pill {
+    font-size:12px;
+    font-weight:500;
+    padding:8px 18px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    cursor:pointer;
+    border-radius:100px;
+    transition:all 0.2s;
+  }
+  .filter-pill:hover, .filter-pill.active {
+    background:var(--terracotta);
+    border-color:var(--terracotta);
+    color:white;
+  }
+
+  .profession-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:16px;
+    margin-bottom:56px;
+  }
+  .profession-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:24px;
+    cursor:pointer;
+    transition:all 0.25s;
+    position:relative;
+    overflow:hidden;
+  }
+  .profession-card::before {
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:var(--terracotta);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform 0.25s;
+  }
+  .profession-card:hover { border-color:var(--terracotta); box-shadow:0 8px 30px rgba(196,96,58,0.1); }
+  .profession-card:hover::before { transform:scaleX(1); }
+  .profession-card.selected { border-color:var(--terracotta); box-shadow:0 8px 30px rgba(196,96,58,0.15); }
+  .profession-card.selected::before { transform:scaleX(1); }
+  .prof-icon { font-size:32px;margin-bottom:14px; }
+  .prof-name {
+    font-family:'Cormorant Garamond',serif;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:var(--text);
+  }
+  .prof-desc { font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px; }
+  .prof-tags { display:flex;gap:6px;flex-wrap:wrap; }
+  .prof-tag {
+    font-size:10px;
+    font-weight:500;
+    padding:3px 10px;
+    background:var(--surface);
+    color:var(--muted);
+    border-radius:100px;
+    border:1px solid var(--border);
+  }
+  .prof-price {
+    position:absolute;
+    top:16px;right:16px;
+    font-family:'DM Mono',monospace;
+    font-size:14px;
+    font-weight:500;
+    color:var(--terracotta);
+  }
+
+  /* TEMPLATE BUILDER */
+  .builder-panel {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:4px;
+    overflow:hidden;
+    animation:fadeSlide 0.35s ease;
+    margin-bottom:40px;
+  }
+  @keyframes fadeSlide {
+    from { opacity:0; transform:translateY(16px); }
+    to { opacity:1; transform:none; }
+  }
+  .builder-header {
+    background:linear-gradient(135deg, var(--terracotta), #a84e2e);
+    padding:28px 32px;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  .builder-prof-name {
+    font-family:'Cormorant Garamond',serif;
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  .builder-prof-sub { font-size:12px;opacity:0.75; }
+  .builder-price-badge {
+    background:rgba(255,255,255,0.2);
+    padding:10px 18px;
+    border-radius:3px;
+    text-align:center;
+  }
+  .builder-price-val {
+    font-family:'Cormorant Garamond',serif;
+    font-size:26px;
+    font-weight:700;
+    display:block;
+  }
+  .builder-price-label { font-size:10px;opacity:0.75; }
+  .builder-body { padding:32px; display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+  .builder-column-title {
+    font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;
+    color:var(--muted);margin-bottom:16px;
+  }
+  .template-block {
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:14px 16px;
+    margin-bottom:8px;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    transition:border-color 0.2s;
+  }
+  .template-block:hover { border-color:var(--terracotta); }
+  .template-block-icon { font-size:18px;flex-shrink:0; }
+  .template-block-name { font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px; }
+  .template-block-desc { font-size:11px;color:var(--muted); }
+  .ai-output-area {
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:24px;
+    min-height:200px;
+    background:var(--bg);
+    font-size:13px;
+    color:var(--slate);
+    line-height:1.8;
+    white-space:pre-wrap;
+  }
+  .ai-loading {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:200px;
+    gap:12px;
+  }
+  .spinner {
+    width:28px;height:28px;
+    border:2px solid var(--border);
+    border-top-color:var(--terracotta);
+    border-radius:50%;
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .ai-loading-text { font-size:12px;color:var(--muted); }
+  .builder-actions {
+    padding:20px 32px;
+    border-top:1px solid var(--border);
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+  }
+  .btn-terra {
+    background:var(--terracotta);
+    color:white;
+    border:none;
+    font-family:'DM Sans',sans-serif;
+    font-weight:500;
+    font-size:13px;
+    padding:12px 28px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .btn-terra:hover { background:#b5542f; }
+  .btn-ghost {
+    background:transparent;
+    color:var(--muted);
+    border:1px solid var(--border);
+    font-family:'DM Sans',sans-serif;
+    font-weight:500;
+    font-size:13px;
+    padding:12px 28px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .btn-ghost:hover { border-color:var(--terracotta);color:var(--terracotta); }
+
+  /* DIVIDER */
+  .divider {
+    height:1px;background:var(--border);margin:48px 0;
+  }
+  .empty-state {
+    text-align:center;
+    padding:56px 32px;
+    color:var(--muted);
+  }
+  .empty-icon { font-size:48px;margin-bottom:12px;display:block;opacity:0.5; }
+  .empty-text { font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic; }
+
+  /* PAYWALL */
+  .pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;}
+  .pw-modal{background:var(--card);border:1px solid var(--border);border-radius:6px;max-width:400px;width:90%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.25);}
+  .pw-top{background:var(--surface);padding:32px;text-align:center;border-bottom:1px solid var(--border);}
+  .pw-icon{font-size:36px;margin-bottom:12px;}
+  .pw-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;margin-bottom:8px;}
+  .pw-sub{font-size:13px;color:var(--muted);line-height:1.5;}
+  .pw-body{padding:24px;}
+  .pw-buy{display:block;width:100%;padding:14px;background:var(--terracotta);color:white;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;border:none;border-radius:4px;cursor:pointer;margin-bottom:12px;transition:opacity 0.2s;}
+  .pw-buy:hover{opacity:0.85;}
+  .pw-divider{text-align:center;font-size:11px;color:var(--muted);margin:4px 0 12px;}
+  .pw-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-size:13px;padding:11px 14px;outline:none;margin-bottom:8px;border-radius:4px;font-family:'DM Mono',monospace;}
+  .pw-input:focus{border-color:var(--terracotta);}
+  .pw-validate{display:block;width:100%;padding:12px;background:transparent;color:var(--text);border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;border-radius:4px;cursor:pointer;transition:all 0.2s;}
+  .pw-validate:hover{border-color:var(--terracotta);color:var(--terracotta);}
+  .pw-error{color:var(--terracotta);font-size:11px;margin-top:8px;display:none;}
+  .pw-note{font-size:10px;color:var(--muted);text-align:center;margin-top:12px;}
+  .usage-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .usage-dots{display:flex;gap:4px;}
+  .u-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s;}
+  .u-dot.used{background:var(--terracotta);}
+  .usage-text{font-size:11px;color:var(--muted);}
+
+  /* Toast */
+  .toast {
+    position:fixed;bottom:28px;right:28px;
+    background:var(--terracotta);color:white;
+    font-size:12px;font-weight:500;
+    padding:12px 20px;border-radius:3px;
+    z-index:1000;
+    animation:toastIn 0.3s, toastOut 0.3s 1.7s forwards;
+  }
+  @keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes toastOut{to{opacity:0;transform:translateY(16px)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Work<em>Kit</em></div>
+  <ul class="nav-links">
+    <li><a href="#">Templates</a></li>
+    <li><a href="#">Professions</a></li>
+    <li><a href="#">Pricing</a></li>
+  </ul>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <h1>Workspace Templates for <em>Niche Professions</em></h1>
+    <p class="hero-sub">Notion and ClickUp templates purpose-built for therapists, contractors, teachers & more. Ready to sell. Zero competition.</p>
+    <div class="platform-badges">
+      <div class="platform-badge active" id="badge-notion" onclick="selectPlatform('Notion')">
+        <span>◻</span> Notion
+      </div>
+      <div class="platform-badge" id="badge-clickup" onclick="selectPlatform('ClickUp')">
+        <span>⬢</span> ClickUp
+      </div>
+      <div class="platform-badge" id="badge-airtable" onclick="selectPlatform('Airtable')">
+        <span>◈</span> Airtable
+      </div>
+    </div>
+  </div>
+  <div class="hero-preview">
+    <div class="preview-bar">
+      <div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div>
+      <div class="preview-title">Therapist Practice OS — Notion Template</div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-section">
+        <div class="preview-section-header">Client Management</div>
+        <div class="preview-block"><span class="block-icon">👤</span>Client Intake Form<span class="block-tag">Database</span></div>
+        <div class="preview-block"><span class="block-icon">📋</span>Session Notes<span class="block-tag orange">Template</span></div>
+        <div class="preview-block"><span class="block-icon">📅</span>Appointment Calendar<span class="block-tag blue">Calendar</span></div>
+      </div>
+      <div class="preview-section">
+        <div class="preview-section-header">Business Ops</div>
+        <div class="preview-block"><span class="block-icon">💰</span>Billing & Invoices<span class="block-tag">Tracker</span></div>
+        <div class="preview-block"><span class="block-icon">📊</span>Practice Analytics<span class="block-tag orange">Dashboard</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="app-main">
+  <div class="section-heading">Browse by <em>Profession</em></div>
+  <p class="section-sub">Select a profession to generate a complete, ready-to-sell workspace template.</p>
+
+  <div class="profession-filter">
+    <div class="filter-pill active" onclick="filterProf('all', this)">All Professions</div>
+    <div class="filter-pill" onclick="filterProf('health', this)">Healthcare</div>
+    <div class="filter-pill" onclick="filterProf('education', this)">Education</div>
+    <div class="filter-pill" onclick="filterProf('trades', this)">Trades</div>
+    <div class="filter-pill" onclick="filterProf('creative', this)">Creative</div>
+    <div class="filter-pill" onclick="filterProf('business', this)">Business</div>
+  </div>
+
+  <div class="profession-grid" id="profGrid"></div>
+
+  <div id="builderArea">
+    <div class="empty-state">
+      <span class="empty-icon">✦</span>
+      <p class="empty-text">Select a profession above to preview and generate its template</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROFESSIONS = [
+  {
+    id:'therapist', name:'Therapist', icon:'🧠',
+    category:'health',
+    desc:'Private practice management, client tracking, session notes, and billing.',
+    price:'$67', tags:['Client Intake','Session Notes','HIPAA Checklist'],
+    blocks:[
+      {icon:'👤',name:'Client Database',desc:'Track all clients, contact info, diagnoses'},
+      {icon:'📝',name:'Session Notes Template',desc:'Structured SOAP-format note pages'},
+      {icon:'💳',name:'Billing Tracker',desc:'Invoice management and payment records'},
+      {icon:'📊',name:'Progress Dashboard',desc:'Visual client progress tracking'},
+      {icon:'⚖️',name:'HIPAA Compliance Hub',desc:'Privacy policy templates and checklists'},
+      {icon:'📅',name:'Appointment Calendar',desc:'Recurring sessions and availability'},
+    ]
+  },
+  {
+    id:'teacher', name:'Teacher', icon:'📚',
+    category:'education',
+    desc:'Lesson planning, student rosters, grade tracking, and parent comms.',
+    price:'$47', tags:['Lesson Plans','Gradebook','Student Tracker'],
+    blocks:[
+      {icon:'📖',name:'Lesson Plan Builder',desc:'Weekly/unit plan templates by subject'},
+      {icon:'👨‍👩‍👧',name:'Student Roster',desc:'Profiles, accommodations, contact info'},
+      {icon:'✅',name:'Gradebook',desc:'Assignment tracker with auto-averaging'},
+      {icon:'📬',name:'Parent Communication Log',desc:'Emails, calls, conferences logged'},
+      {icon:'🗓️',name:'Academic Calendar',desc:'School year mapped with key dates'},
+      {icon:'📁',name:'Resource Library',desc:'Organized curriculum materials vault'},
+    ]
+  },
+  {
+    id:'contractor', name:'Contractor', icon:'🏗️',
+    category:'trades',
+    desc:'Project bidding, job tracking, subcontractor management, invoicing.',
+    price:'$79', tags:['Project Tracker','Bid Templates','Job Costing'],
+    blocks:[
+      {icon:'📋',name:'Project Pipeline',desc:'Leads, active jobs, completed work'},
+      {icon:'💵',name:'Bid & Estimate Builder',desc:'Itemized quote templates'},
+      {icon:'👷',name:'Subcontractor Roster',desc:'Vendor contacts, rates, specialties'},
+      {icon:'📦',name:'Materials Tracker',desc:'Purchase orders and inventory log'},
+      {icon:'🧾',name:'Invoice Generator',desc:'Client invoicing with payment status'},
+      {icon:'📸',name:'Job Photo Log',desc:'Before/during/after project photos'},
+    ]
+  },
+  {
+    id:'coach', name:'Life Coach', icon:'🌟',
+    category:'business',
+    desc:'Client programs, session structure, goals tracking, course content.',
+    price:'$57', tags:['Client Programs','Goals','Content Vault'],
+    blocks:[
+      {icon:'🎯',name:'Client Goals Tracker',desc:'90-day goal setting and review'},
+      {icon:'🗣️',name:'Session Framework',desc:'Pre-session prep and post-session notes'},
+      {icon:'📚',name:'Program Content Vault',desc:'Organized modules, PDFs, recordings'},
+      {icon:'💌',name:'Client CRM',desc:'Touchpoints, renewals, testimonials'},
+      {icon:'📈',name:'Business Dashboard',desc:'Revenue, clients, growth metrics'},
+      {icon:'🎓',name:'Onboarding Workflow',desc:'New client welcome sequence'},
+    ]
+  },
+  {
+    id:'photographer', name:'Photographer', icon:'📷',
+    category:'creative',
+    desc:'Shoot management, client galleries, editing workflows, bookings.',
+    price:'$52', tags:['Shoot Tracker','Client Proofs','Editing Flow'],
+    blocks:[
+      {icon:'📸',name:'Booking & Inquiry CRM',desc:'Lead tracking from inquiry to booking'},
+      {icon:'📁',name:'Project / Shoot Database',desc:'Every shoot with details and status'},
+      {icon:'✏️',name:'Editing Workflow Tracker',desc:'Culling → editing → delivery stages'},
+      {icon:'🖼️',name:'Gallery Delivery Tracker',desc:'Client proofs and final delivery log'},
+      {icon:'🧾',name:'Contract & Invoice Hub',desc:'Template contracts and payment tracking'},
+      {icon:'📅',name:'Content Calendar',desc:'Social media + portfolio planning'},
+    ]
+  },
+  {
+    id:'nurse', name:'Nurse / NP', icon:'⚕️',
+    category:'health',
+    desc:'Continuing education tracking, shift log, career documentation.',
+    price:'$44', tags:['CEU Tracker','Shift Log','Career Portfolio'],
+    blocks:[
+      {icon:'🎓',name:'CEU / Certification Tracker',desc:'Credits, deadlines, license renewals'},
+      {icon:'📝',name:'Shift Log',desc:'Hours, unit, notes per shift'},
+      {icon:'💼',name:'Career Portfolio',desc:'Skills, accomplishments, references'},
+      {icon:'📋',name:'Competency Checklist',desc:'Skills verified and documented'},
+      {icon:'🔬',name:'Study & Resource Hub',desc:'Boards prep and clinical references'},
+      {icon:'🏥',name:'Job Search Tracker',desc:'Applications, interviews, offers'},
+    ]
+  },
+];
+
+let selectedPlatform = 'Notion';
+let selectedProf = null;
+let activeFilter = 'all';
+
+function selectPlatform(p) {
+  selectedPlatform = p;
+  document.querySelectorAll('.platform-badge').forEach(b => b.classList.remove('active'));
+  document.getElementById('badge-' + p.toLowerCase()).classList.add('active');
+  if (selectedProf) renderBuilder(selectedProf);
+}
+
+function filterProf(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('profGrid');
+  const filtered = activeFilter === 'all' ? PROFESSIONS : PROFESSIONS.filter(p => p.category === activeFilter);
+  grid.innerHTML = '';
+  filtered.forEach(prof => {
+    const card = document.createElement('div');
+    card.className = 'profession-card' + (selectedProf?.id === prof.id ? ' selected' : '');
+    card.innerHTML = `
+      <div class="prof-price">${prof.price}</div>
+      <div class="prof-icon">${prof.icon}</div>
+      <div class="prof-name">${prof.name}</div>
+      <p class="prof-desc">${prof.desc}</p>
+      <div class="prof-tags">${prof.tags.map(t => `<span class="prof-tag">${t}</span>`).join('')}</div>`;
+    card.onclick = () => selectProf(prof);
+    grid.appendChild(card);
+  });
+}
+
+function selectProf(prof) {
+  selectedProf = prof;
+  renderGrid();
+  renderBuilder(prof);
+  document.getElementById('builderArea').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function renderBuilder(prof) {
+  const area = document.getElementById('builderArea');
+  area.innerHTML = `
+    <div class="builder-panel">
+      <div class="builder-header">
+        <div>
+          <div class="builder-prof-name">${prof.icon} ${prof.name} ${selectedPlatform} Template</div>
+          <div class="builder-prof-sub">${prof.desc}</div>
+        </div>
+        <div class="builder-price-badge">
+          <span class="builder-price-val">${prof.price}</span>
+          <span class="builder-price-label">Suggested price</span>
+        </div>
+      </div>
+      <div class="builder-body">
+        <div>
+          <div class="builder-column-title">Template Structure (${prof.blocks.length} blocks)</div>
+          ${prof.blocks.map(b => `
+            <div class="template-block">
+              <span class="template-block-icon">${b.icon}</span>
+              <div>
+                <div class="template-block-name">${b.name}</div>
+                <div class="template-block-desc">${b.desc}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div>
+          <div class="builder-column-title">AI-Generated Sales Description</div>
+          <div class="ai-output-area" id="aiOutput">
+            <div class="ai-loading" id="aiLoading">
+              <div class="spinner"></div>
+              <div class="ai-loading-text">Crafting your product description...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="builder-actions">
+        <div class="usage-row" style="margin-bottom:0;flex:1"><div class="usage-dots"><div class="u-dot" id="ud0"></div><div class="u-dot" id="ud1"></div><div class="u-dot" id="ud2"></div></div><div class="usage-text" id="usageText">3 free generations remaining</div></div>
+        <button class="btn-ghost" onclick="copyDescription()">Copy Description</button>
+        <button class="btn-terra" onclick="regenerateDesc()">✦ Regenerate Copy</button>
+      </div>
+    </div>`;
+
+  generateDescription(prof);
+}
+
+// === PAYWALL ===
+const PW_APP='workkit',PW_LIMIT=3,PW_BUY_URL='https://YOUR_STORE.lemonsqueezy.com/checkout/buy/WORKKIT_PRODUCT_ID';
+function pwGetUses(){return parseInt(localStorage.getItem(PW_APP+'_uses')||'0');}
+function pwHasKey(){return !!localStorage.getItem(PW_APP+'_key');}
+function pwCanUse(){return pwHasKey()||pwGetUses()<PW_LIMIT;}
+function pwTrackUse(){if(!pwHasKey()){localStorage.setItem(PW_APP+'_uses',pwGetUses()+1);pwUpdateBar();}}
+function checkPaywall(){if(pwCanUse())return true;document.getElementById('pwOverlay').style.display='flex';return false;}
+function pwUpdateBar(){
+  const uses=pwGetUses(),remaining=PW_LIMIT-uses;
+  for(let i=0;i<3;i++){const d=document.getElementById('ud'+i);if(d)d.classList.toggle('used',i<uses);}
+  const t=document.getElementById('usageText');
+  if(t)t.textContent=pwHasKey()?'✓ Unlimited — Pro License Active':`${Math.max(0,remaining)} free generation${remaining===1?'':'s'} remaining`;
+}
+async function pwValidate(){
+  const key=document.getElementById('pwKeyInput').value.trim();
+  const err=document.getElementById('pwError');err.style.display='none';
+  if(!key){err.textContent='Please enter your license key.';err.style.display='block';return;}
+  try{
+    const r=await fetch('https://api.lemonsqueezy.com/v1/licenses/validate',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({license_key:key})});
+    const d=await r.json();
+    if(d.valid){localStorage.setItem(PW_APP+'_key',key);document.getElementById('pwOverlay').style.display='none';pwUpdateBar();}
+    else{err.textContent='Invalid key. Check your email.';err.style.display='block';}
+  }catch(e){err.textContent='Connection error.';err.style.display='block';}
+}
+document.addEventListener('DOMContentLoaded',pwUpdateBar);
+// === END PAYWALL ===
+
+async function generateDescription(prof) {
+  if(!checkPaywall()) return;
+  const blocks = prof.blocks.map(b => `- ${b.name}: ${b.desc}`).join('\n');
+  const prompt = `Write a compelling, conversion-focused product description for a ${selectedPlatform} template called "${prof.name} ${selectedPlatform} Template" priced at ${prof.price}.
+
+Template includes these sections:
+${blocks}
+
+Write it as:
+1. A punchy headline (one line)
+2. A 2-3 sentence hook that speaks to the pain points of ${prof.name.toLowerCase()}s
+3. "What's Inside" bulleted breakdown (use the blocks above)
+4. A closing urgency line
+
+Keep it warm, professional, and benefit-focused. No fluff. Max 250 words.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user', content:prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text||'').join('') || 'Error generating description.';
+    pwTrackUse();
+    document.getElementById('aiOutput').innerHTML = `<div style="white-space:pre-wrap;font-size:13px;line-height:1.8;color:var(--slate)">${escapeHtml(text)}</div>`;
+  } catch(e) {
+    document.getElementById('aiOutput').innerHTML = `<div style="color:var(--terracotta);font-size:13px">Error: ${e.message}</div>`;
+  }
+}
+
+function regenerateDesc() { if (selectedProf) generateDescription(selectedProf); }
+
+function copyDescription() {
+  const el = document.getElementById('aiOutput');
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    const t = document.createElement('div');
+    t.className='toast'; t.textContent='✓ Description copied';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 2100);
+  });
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+renderGrid();
+</script>
+<div class="pw-overlay" id="pwOverlay" style="display:none">
+  <div class="pw-modal">
+    <div class="pw-top"><div class="pw-icon">🔒</div><div class="pw-title">Free limit reached</div><div class="pw-sub">You've used your 3 free generations. Unlock unlimited access with a Pro license.</div></div>
+    <div class="pw-body">
+      <button class="pw-buy" onclick="window.open('https://YOUR_STORE.lemonsqueezy.com/checkout/buy/WORKKIT_PRODUCT_ID','_blank')">Get Unlimited Access — $9/mo</button>
+      <div class="pw-divider">— or enter existing license key —</div>
+      <input class="pw-input" id="pwKeyInput" type="text" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX">
+      <button class="pw-validate" onclick="pwValidate()">Activate License Key</button>
+      <div class="pw-error" id="pwError"></div>
+      <div class="pw-note">Secured by Lemon Squeezy · Cancel anytime</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
